@@ -1,0 +1,74 @@
+<header>
+    <nav>
+        <ul>
+            <li>
+              <div class="dropdown">
+                <a class="dropdown" id="load" href="#">LOAD</a>
+                <div class="dropdown-content scroll">
+                  <ul  id="stored-saves-list" class="dropdown-list">
+                  {{#if stored_canvas_states}}
+                    {{#each stored_canvas_states}}
+                        <li state_id={{state_id}} class="dropdown-item load-item">
+                            <a href="#" class="load-stored-canvas">{{name}}</a>
+                            <span class="date timestamp-to-readable">{{timestamp}}</span>
+                        </li>
+                    {{/each}}
+                  {{else}}
+                    <li class="dropdown-item no-hover">
+                      <span class="padder">Nothing saved yet.</span>
+                    </li>
+                  {{/if}}
+                  </ul>
+                </div>
+              </div>
+            </li> <!-- Display list of states saved to db -->
+            <li>
+              <div class="dropdown">
+                <a id="save-dropdown" href="#">SAVE</a>
+                <div id="save-box" class="dropdown-content">
+                  <ul class="dropdown-list">
+                    <li>
+                      <input id="save-text" type="text" placeholder="Canvas name"/>
+                      <a id="save" href="#">SAVE CANVAS</a>
+                      <span id="saved" class="saved">SAVED!</span>
+                    </li>
+                  </ul>
+                </div>
+            </li>  <!-- Saves current (serverside) state to db. -->
+            <!-- <li><a href="/database">DB</a></li> -->
+        </ul>
+    </nav>
+</header>
+<canvas id="colldraw-canvas" width="1200" height="800">
+  <input id="populated-canvas" type="hidden" value={{stored_canvas_states.[0].state}}/>
+</canvas>
+<div id="canvas-controls" class="moveableBox" draggable="true">
+  <div class="top">
+    CANVAS CONTROLS
+  </div>
+  <div class="bottom">
+    <div class="ctrlRow">
+      <button id="canvas-mode-button">Switch to Selection Mode</button>
+    </div>
+    <div class="ctrlRow">
+      <label for="brush-size">Brush Size (px):</label>
+      <input id="brush-size" placeholder="in pixels" type="text" value="1"/>
+    </div>
+    <div class="ctrlRow">
+      <label for="brush-color">Brush Color (hex/rgb()/string):</label>
+      <input id="brush-color" placeholder="hex/rgb()/string" type="text" value="black"/>
+    </div>
+    <div class="ctrlRow twoCol">
+      <button id="canvas-undo-button">Undo</button>
+      <button id="canvas-redo-button">Redo</button>
+    </div>
+    <div class="ctrlRow">
+      <button id="canvas-clear-button">Clear Canvas</button>
+    </div>
+    <div class="ctrlRow">
+      <ul>
+        <li><em>Delete key</em> removes selected object.</li>
+        <li>To add images, drag and drop them from desktop</li>
+    </div>
+  </div>
+</div>
