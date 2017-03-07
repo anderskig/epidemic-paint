@@ -5,8 +5,9 @@ Collaborative drawer project.
 Built with nodejs backend, socket.io for client-server communication and fabric.js for client canvas handling.
 
 ## Installation
-* Checkout/Download this repository and make sure you have `npm` installed.
+* Checkout/Download this repository and make sure you have `nodejs` and `npm` installed.
 * `npm install` in repository root to install app and dependencies.
+* If sqlite3 dependency installation fails make sure you have /usr/bin/node symlinked to /usr/bin/nodejs. This was an issue on my Ubuntu 16.04 machine.
 
 ## Usage
 * `npm start` in repository root to start server. Checks environment variable 'PORT' for configuration of which port to listen to. Defaults to 3000.
