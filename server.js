@@ -135,6 +135,6 @@ app.use((req, res, next) => { req.db = db; next() })
 routes.create(app)
 
 // server
-server.listen(app.get('port'), () => {
-  console.log('Listening on http://localhost:' + app.get('port'))
+server.listen(app.get('port'), "0.0.0.0", () => {
+  console.log('Listening on http://0.0.0.0:' + app.get('port'))
 })
