@@ -2,7 +2,7 @@
   "name": "epidemic_draw",
   "version": "0.0.1",
   "scripts": {
-    "start": "node --harmony ./server.js"
+    "start": "node --use-strict --harmony ./server.js"
   },
   "license": "MIT",
   "description": "Collaborative draw application using fabric.js",
