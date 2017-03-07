@@ -281,10 +281,14 @@ CollDrawCanvas.prototype.initControls = function () {
   }
 
   save.onclick = function () {
+    var saveLoader = document.getElementById('save-loader')
+    saveLoader.classList.remove('hidden')
     _this.socket.emit('save', {'name': this.previousElementSibling.value, 'state': JSON.stringify(canvas)},
     function (data) {
       // Callback on server done saving.
       var saved = document.getElementById('saved')
+      var saveLoader = document.getElementById('save-loader')
+      saveLoader.className += ' hidden'
       saved.className += ' save-done'
       setTimeout(function () {
         saved.classList.remove('save-done')
