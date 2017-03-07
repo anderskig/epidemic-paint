@@ -194,6 +194,9 @@ nav ul .dropdown-item:not(.no-hover):hover {
     color: #FFF;
     transition: 100ms;
 }
+.hidden {
+  display:none;
+}
 .saved {
   font-family: Oswald;
   display:none;
