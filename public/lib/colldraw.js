@@ -257,7 +257,6 @@ CollDrawCanvas.prototype.initControls = function () {
   var isDown = false
   var offset, mousePosition
   var i, j, readableTime
-
   for (j in dateItems) {
     readableTime = readableClientTime(dateItems[j].innerHTML)
     dateItems[j].innerHTML = readableTime
@@ -270,12 +269,12 @@ CollDrawCanvas.prototype.initControls = function () {
     loadItems[i].onclick = loadCanvas
   }
 
-  brushSize.onchange = function () {
+  brushSize.onkeyup = function () {
     var width = parseInt(this.value, 10) || 1
     canvas.freeDrawingBrush.width = width
   }
 
-  brushColor.onchange = function () {
+  brushColor.onkeyup = function () {
     canvas.freeDrawingBrush.color = this.value
   }
 
