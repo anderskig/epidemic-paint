@@ -153,7 +153,7 @@ CollDrawCanvas.prototype.initEvents = function () {
     _this.socket.emit('canvas:for_client', JSON.stringify(_this.canvas))
   })
 
-  this.socket.on('disconnect', function () { console.log('socket.on disconnect') })
+  this.socket.on('disconnect', function () { console.log('Disconnected from server!') })
   window.onkeyup = function (e) {
     var key = event.which || event.keyCode
     var selectedObject = _this.canvas.getActiveObject()
@@ -202,12 +202,9 @@ CollDrawCanvas.prototype.initUndoRedo = function () {
   this.historyHandler.register('ADD_OBJECT', {
     init: function (canvas, object) {
       // Object is already added, so init shouldn't do anything.
-      console.log('scope', canvas)
-      console.log('HH: init ADD OBJECT')
       return object
     },
     run: function (canvas, object) {
-      console.log('HH: run ADD OBJECT')
       if (!canvas.getObjectByUuid(object.uuid)) {
         object.from_history = true
         canvas.add(object)
@@ -216,9 +213,7 @@ CollDrawCanvas.prototype.initUndoRedo = function () {
       _this.disableEnableHistoryButtons()
     },
     undo: function (canvas, object) {
-      console.log(_this.historyHandler.storeStats().length)
       object.remove()
-      console.log(_this.historyHandler.storeStats())
       _this.disableEnableHistoryButtons()
     }
   })
