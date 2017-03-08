@@ -126,6 +126,7 @@ CollDrawCanvas.prototype.initEvents = function () {
     var newSaveLi = document.createElement('li')
     var newSaveA = document.createElement('a')
     var newSaveSpan = document.createElement('span')
+    var placeholder = $('no-save-placeholder')
     newSaveLi.className = 'dropdown-item load-item'
     newSaveSpan.className = 'date timestamp-to-readable'
     newSaveSpan.innerHTML = readableClientTime(save.timestamp)
@@ -135,6 +136,9 @@ CollDrawCanvas.prototype.initEvents = function () {
     newSaveLi.appendChild(newSaveA)
     newSaveLi.appendChild(newSaveSpan)
     $('stored-saves-list').appendChild(newSaveLi)
+    if (placeholder) {
+      placeholder.parentNode.removeChild(placeholder)
+    }
   })
 
   this.socket.on('load', function (serializedCanvas) {
