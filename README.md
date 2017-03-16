@@ -18,3 +18,6 @@ Built with nodejs backend, socket.io for client-server communication and fabric.
 * Images can be added to canvas by drag and drop from desktop.
 * Any connected client can add/move/scale/rotate/delete paths and images.
 * Undo / Redo (currently only support adding and removing objects, not editing them.).
+
+## Known issues
+* If to many actions (especially loads of stored canvases) occur more or less simultaneously and the client-server connection isn't fast enough clients might get out of sync with each other.
