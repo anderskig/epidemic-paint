@@ -126,6 +126,7 @@ CollDrawCanvas.prototype.initEvents = function () {
     var newSaveLi = document.createElement('li')
     var newSaveA = document.createElement('a')
     var newSaveSpan = document.createElement('span')
+    var placeholder = $('no-save-placeholder')
     newSaveLi.className = 'dropdown-item load-item'
     newSaveSpan.className = 'date timestamp-to-readable'
     newSaveSpan.innerHTML = readableClientTime(save.timestamp)
@@ -135,6 +136,9 @@ CollDrawCanvas.prototype.initEvents = function () {
     newSaveLi.appendChild(newSaveA)
     newSaveLi.appendChild(newSaveSpan)
     $('stored-saves-list').appendChild(newSaveLi)
+    if (placeholder) {
+      placeholder.parentNode.removeChild(placeholder)
+    }
   })
 
   this.socket.on('load', function (serializedCanvas) {
@@ -149,7 +153,7 @@ CollDrawCanvas.prototype.initEvents = function () {
     _this.socket.emit('canvas:for_client', JSON.stringify(_this.canvas))
   })
 
-  this.socket.on('disconnect', function () { console.log('socket.on disconnect') })
+  this.socket.on('disconnect', function () { console.log('Disconnected from server!') })
   window.onkeyup = function (e) {
     var key = event.which || event.keyCode
     var selectedObject = _this.canvas.getActiveObject()
@@ -198,12 +202,9 @@ CollDrawCanvas.prototype.initUndoRedo = function () {
   this.historyHandler.register('ADD_OBJECT', {
     init: function (canvas, object) {
       // Object is already added, so init shouldn't do anything.
-      console.log('scope', canvas)
-      console.log('HH: init ADD OBJECT')
       return object
     },
     run: function (canvas, object) {
-      console.log('HH: run ADD OBJECT')
       if (!canvas.getObjectByUuid(object.uuid)) {
         object.from_history = true
         canvas.add(object)
@@ -212,9 +213,7 @@ CollDrawCanvas.prototype.initUndoRedo = function () {
       _this.disableEnableHistoryButtons()
     },
     undo: function (canvas, object) {
-      console.log(_this.historyHandler.storeStats().length)
       object.remove()
-      console.log(_this.historyHandler.storeStats())
       _this.disableEnableHistoryButtons()
     }
   })
@@ -258,7 +257,6 @@ CollDrawCanvas.prototype.initControls = function () {
   var isDown = false
   var offset, mousePosition
   var i, j, readableTime
-
   for (j in dateItems) {
     readableTime = readableClientTime(dateItems[j].innerHTML)
     dateItems[j].innerHTML = readableTime
@@ -271,12 +269,12 @@ CollDrawCanvas.prototype.initControls = function () {
     loadItems[i].onclick = loadCanvas
   }
 
-  brushSize.onchange = function () {
+  brushSize.onkeyup = function () {
     var width = parseInt(this.value, 10) || 1
     canvas.freeDrawingBrush.width = width
   }
 
-  brushColor.onchange = function () {
+  brushColor.onkeyup = function () {
     canvas.freeDrawingBrush.color = this.value
   }
 
