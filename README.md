@@ -1,6 +1,6 @@
 # epidemic-paint
 
-Collaborative drawer project.
+Simple collaborative drawer project done over a couple of days.
 
 Built with nodejs backend, socket.io for client-server communication and fabric.js for client canvas handling.
 
