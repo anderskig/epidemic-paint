@@ -1,8 +1,8 @@
 # epidemic-paint
 
-Simple collaborative drawer project done over a couple of days.
+Collaborative drawer project done over a couple of days as an assignment for a recruitment process. Current state is a proof of concept and proptype, and should not be seen as a finished and polished product.
 
-Built with nodejs backend, socket.io for client-server communication and fabric.js for client canvas handling.
+The project is built with a nodejs backend, socket.io for client-server communication and fabric.js for client canvas handling. Data persistance is handled with SQlite.
 
 ## Installation
 * Checkout/Download this repository and make sure you have `nodejs` and `npm` installed.

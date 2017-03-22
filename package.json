@@ -6,7 +6,10 @@
   },
   "license": "MIT",
   "description": "Collaborative draw application using fabric.js",
-  "repository": "Soon",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/anderskig/epidemic-paint"
+  },
   "dependencies": {
     "body-parser": "^1.12.4",
     "cookie-parser": "^1.3.5",
