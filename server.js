@@ -1,16 +1,25 @@
+/*
+ * This file uses ES6 syntax and runs in strict mode.
+ * dependencies are specified in package.json
+ * Linted with eslint standard syntax. I.e. no semi-colon line breaks.
+ */
+
+/*
+ * Import needed modules and create app.
+ */
 let path = require('path')
 let express = require('express')
 let expressHbs = require('express-handlebars')
 let bodyParser = require('body-parser')
 let routes = require('./routes')
 let sio = require('socket.io')
+let filesystem = require('fs')
 let app = express()
 let server = require('http').createServer(app)
 
 /*
  * Setup Database. Switched out LEAN stacks loki.js to SQlite.
  */
-let filesystem = require('fs')
 let dbFile = 'db.db'
 let dbFileExists = filesystem.existsSync(dbFile)
 let sqlite3 = require('sqlite3').verbose()
@@ -52,7 +61,7 @@ io.on('connection', function (client) {
 function clientEventHandling (client) {
   client.on('canvas:for_client', function (state) {
     let clientId = newClients.pop()
-    if (clientId) { // If client wrongly gets initalized twice this might be called twice.
+    if (clientId) {
       io.sockets.connected[clientId].emit('load', state)
     }
   })
@@ -90,7 +99,7 @@ function clientEventHandling (client) {
     insertStmnt.run(timestamp, name, serializedCanvas, function (err) {
       let id
       if (!err) {
-        id = this.lastID // If this was an ES6 arrow function this was the socket object instead. TODO: Read up on why.
+        id = this.lastID
         io.sockets.emit('new:save',
           {'state_id': id, 'timestamp': timestamp, 'name': name, 'state': serializedCanvas})
         callback(timestamp)
@@ -113,7 +122,7 @@ function clientEventHandling (client) {
 }
 
 /*
- * Boilerplate from LEAN stack
+ * Mostly boilerplate from LEAN stack
  */
 // settings
 app.set('port', process.env.PORT || 3000) // Use 3000 if environment variable PORT isn't defined.
@@ -134,7 +143,7 @@ app.use((req, res, next) => { req.db = db; next() })
 // router
 routes.create(app)
 
-// server
-server.listen(app.get('port'), "0.0.0.0", () => {
+// initialize server listening
+server.listen(app.get('port'), '0.0.0.0', () => {
   console.log('Listening on http://0.0.0.0:' + app.get('port'))
 })

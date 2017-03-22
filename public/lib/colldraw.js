@@ -1,6 +1,15 @@
+/*
+ * This file uses ES5 syntax for better browser compability
+ * Depnds on fabric.js, moment.js, socket.io and commandant.js
+ * Linted with eslint standard syntax. I.e. no semi-colon line breaks.
+ */
+
+/* lint configuration start */
 /* global fabric, io, alert, moment, Commandant */
 /* eslint-env browser */
-var tzStr = moment.tz.guess() // Guess clients timezone
+/* lint configuration end */
+
+var tzStr = moment.tz.guess() // Guess client timezone and store it globally
 
 /**
 *
@@ -12,7 +21,7 @@ var CollDrawCanvas = function () {
   var _this = this
   this.socket.on('connect', function () {
     if (_this.initialized) {
-      location.reload() // To not get double canvases on server re-connect.
+      location.reload() // To not get double canvases on server re-connect (i.e server goes down and up agin).
     } else {
       _this.initCanvas()
       _this.initialized = true
@@ -42,6 +51,7 @@ CollDrawCanvas.prototype.initCanvas = function () {
  */
 CollDrawCanvas.prototype.initEvents = function () {
   var _this = this
+  var handleDrop
   this.stopBroadcast = false // Used when changes made on canvas shoudn't be broadcasted to other clients.
 
   if (dragAndDropSupported()) {
@@ -49,6 +59,40 @@ CollDrawCanvas.prototype.initEvents = function () {
      * TODO: Also add eventListeners that makes it possible to drag and drop from within browser,
      * i.e. images from other tabs.
     */
+    handleDrop = function (e) {
+      var files, file, i, reader
+      e.stopPropagation()
+      e.preventDefault()
+      if (e.dataTransfer.files.length > 0) {
+        files = e.dataTransfer.files
+        for (i = 0; i < files.length; i++) {
+          file = files[i]
+          if (file.type.match('image.*')) {
+            reader = new FileReader()
+            reader.onload = function (evt) {
+              var img, imgObj
+              // create img element
+              img = document.createElement('img')
+              img.src = evt.target.result
+              // put image on canvas
+              imgObj = new fabric.Image(img, {
+                width: img.width,
+                height: img.height,
+                // Set the center of the new object based on the event coordinates relative to the canvas container.
+                left: e.layerX,
+                top: e.layerY,
+                selectable: true
+              })
+              _this.canvas.add(imgObj)
+            }
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(file)
+          }
+        }
+      }
+      this.classList.remove('dropHover')
+      return false
+    }
     _this.container.addEventListener('dragenter', handleDragEnter, false)
     _this.container.addEventListener('dragover', handleDragOver, false)
     _this.container.addEventListener('dragleave', handleDragLeave, false)
@@ -72,7 +116,6 @@ CollDrawCanvas.prototype.initEvents = function () {
     var object = e.target
     if (!object.from_server && !_this.stopBroadcast) {
       _this.socket.emit('object:added', JSON.stringify(object))
-      // _this.saveObjState('added', e.target)
       if (!object.from_history) {
         _this.historyHandler.execute('ADD_OBJECT', object)
       }
@@ -122,7 +165,10 @@ CollDrawCanvas.prototype.initEvents = function () {
   })
 
   this.socket.on('new:save', function (save) {
-    // Create DOM element mimicing those created by handlebars template on page load.
+    /*
+     * Create DOM element mimicing those created by handlebars template on page load.
+     * This is a little clunkier than I'd wish, but not worth adding jQuery for.
+     */
     var newSaveLi = document.createElement('li')
     var newSaveA = document.createElement('a')
     var newSaveSpan = document.createElement('span')
@@ -170,7 +216,8 @@ CollDrawCanvas.prototype.initEvents = function () {
  * TODO: Enable undo redo for object modifications as well. This poses some challenges due to how modifications
  * are handled internally in fabric.js and we can only listen to the 'object:modified' event In which we can only get
  * the new values (or change fabric protottype for modifications).
- * Previous values for each object must probably be held in a stack outside of Commandant.
+ * Previous values for each object must probably be held in a stack outside of Commandant. Did not have time to implent
+ * this.
  */
 CollDrawCanvas.prototype.initUndoRedo = function () {
   var _this = this
@@ -392,7 +439,7 @@ function loadCanvas () {
 }
 
 /*
- * Drag and drop functions
+ * General drag and drop functions
  */
 function handleDragOver (e) {
   e.preventDefault() // Necessary. Allows us to drop.
@@ -409,43 +456,6 @@ function handleDragLeave (e) {
   this.classList.remove('dropHover')
 }
 
-function handleDrop (e) {
-  var files, file, i, reader
-  e.stopPropagation() // Stops some browsers from redirecting.
-  e.preventDefault() // Stops some browsers from redirecting.
-  if (e.dataTransfer.files.length > 0) {
-    files = e.dataTransfer.files
-    for (i = 0; i < files.length; i++) {
-      file = files[i]
-      // Only process image files.
-      if (file.type.match('image.*')) {
-        // Read the File objects in this FileList.
-        reader = new FileReader()
-        // listener for the onload event
-        reader.onload = function (evt) {
-          var img, imgObj
-          // create img element
-          img = document.createElement('img')
-          img.src = evt.target.result
-          // put image on canvas
-          imgObj = new fabric.Image(img, {
-            width: img.width,
-            height: img.height,
-            // Set the center of the new object based on the event coordinates relative to the canvas container.
-            left: e.layerX,
-            top: e.layerY,
-            selectable: true
-          })
-          window.collDrawCanvas.canvas.add(imgObj)
-        }
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(file)
-      }
-    }
-  }
-  this.classList.remove('dropHover')
-  return false
-}
 /*
  * Modify fabric.js Object and Canvas prototypes to handle uuids for objects
  */
